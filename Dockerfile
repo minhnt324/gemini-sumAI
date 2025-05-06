@@ -1,5 +1,11 @@
 FROM python:3.10-slim
 
+# Tạo thư mục làm việc
+WORKDIR /app
+
+# Copy file requirements.txt trước để cài dependencies
+COPY requirements.txt /app/
+
 # Cài đặt các package cần thiết và thư viện Python
 RUN apt-get update && apt-get install -y \
     tesseract-ocr \
@@ -7,23 +13,11 @@ RUN apt-get update && apt-get install -y \
     pip install --no-cache-dir -r requirements.txt && \
     mkdir -p /app/uploads
 
-# Chỉ định thư mục làm việc
-WORKDIR /app
-
-# Sao chép tệp requirements.txt vào container
-COPY requirements.txt .
-
-# Cài đặt các thư viện từ requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Sao chép toàn bộ mã nguồn vào container
+# Copy toàn bộ mã nguồn còn lại
 COPY . /app
 
-# Expose port mà Flask sẽ sử dụng
+# Mở port Flask app
 EXPOSE 10000
 
-# Đảm bảo biến môi trường FLASK_APP được thiết lập
-ENV FLASK_APP=app.py
-
 # Chạy ứng dụng Flask
-CMD ["flask", "run", "--host=0.0.0.0", "--port=10000"]
+CMD ["python", "app.py"]
