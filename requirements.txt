@@ -1,4 +1,7 @@
-Flask
+flask
 requests
+pillow
+pytesseract
 google-generativeai
+beautifulsoup4
 PyMuPDF
