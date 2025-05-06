@@ -1,78 +1,100 @@
 body {
   font-family: Arial, sans-serif;
-  padding: 20px;
-  max-width: 700px;
-  margin: auto;
-  background-color: #f9f9f9;
+  margin: 2rem;
+  padding: 0;
+  background-color: #f7f7f7;
+  color: #333;
 }
 
-h2 {
-  font-size: 1.5rem;
-  margin-bottom: 15px;
-  color: #333;
+h2, h3 {
+  color: #2c3e50;
 }
 
 form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 1rem;
+  max-width: 600px;
+  margin-bottom: 2rem;
 }
 
-input[type="text"],
-input[type="file"] {
-  padding: 10px;
-  font-size: 1rem;
+input[type="text"], input[type="file"] {
+  padding: 0.6rem;
+  border-radius: 8px;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 button {
-  padding: 12px;
-  background-color: #007bff;
-  color: white;
+  padding: 0.7rem;
   border: none;
-  font-size: 1rem;
-  border-radius: 5px;
+  border-radius: 8px;
+  background-color: #3498db;
+  color: white;
+  font-weight: bold;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #2980b9;
 }
 
-h3 {
-  margin-top: 25px;
-  font-size: 1.2rem;
-  color: #222;
+#error, .error {
+  color: red;
+  font-weight: bold;
+  margin-top: 1rem;
 }
 
-pre {
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  background: #ffffff;
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+/* Markdown Styling */
+#rendered-markdown {
+  background-color: #fff;
+  padding: 1.2rem;
+  border-radius: 10px;
+  border: 1px solid #ccc;
   line-height: 1.6;
-  font-size: 1rem;
-  color: #333;
+  white-space: normal;
+  max-width: 800px;
+  overflow-x: auto;
 }
 
-p {
-  font-size: 1rem;
-  line-height: 1.5;
+#rendered-markdown h1,
+#rendered-markdown h2,
+#rendered-markdown h3 {
+  color: #2c3e50;
+  margin-top: 1.5rem;
 }
 
-@media (max-width: 480px) {
+#rendered-markdown ul,
+#rendered-markdown ol {
+  margin-left: 1.5rem;
+}
+
+#rendered-markdown code {
+  background-color: #eee;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+#rendered-markdown pre {
+  background-color: #eee;
+  padding: 1rem;
+  overflow-x: auto;
+  border-radius: 8px;
+}
+
+@media (max-width: 768px) {
   body {
-    padding: 10px;
+    margin: 1rem;
   }
 
-  input[type="text"], input[type="file"], button {
-    font-size: 0.95rem;
+  form {
+    gap: 0.8rem;
   }
 
-  pre {
-    font-size: 0.95rem;
+  button {
+    padding: 0.6rem;
   }
 }
