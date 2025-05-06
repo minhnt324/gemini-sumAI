@@ -1,25 +1,27 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <title>gemini-sumAI</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <meta charset="UTF-8">
+  <title>gemini-sumAI</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-
 <body>
-    <h2>Nhập URL bài viết hoặc file PDF</h2>
-    <form method="POST">
-        <input type="text" name="url" placeholder="Dán URL vào đây" style="width: 400px;" required>
-        <button type="submit">Tóm tắt</button>
-    </form>
+  <h2>🔍 Tóm tắt nội dung từ URL, PDF hoặc ảnh</h2>
+  <form method="POST" enctype="multipart/form-data">
+    <input type="text" name="url" placeholder="Dán URL bài viết hoặc file PDF" />
+    <p>📎 Hoặc upload ảnh:</p>
+    <input type="file" name="file" accept="image/*" />
+    <br><br>
+    <button type="submit">Tóm tắt</button>
+  </form>
 
-    {% if error %}
-        <p style="color: red;">❌ {{ error }}</p>
-    {% endif %}
+  {% if summary %}
+  <h3>📄 Kết quả tóm tắt:</h3>
+  <pre>{{ summary }}</pre>
+  {% endif %}
 
-    {% if summary %}
-        <h3>Kết quả tóm tắt:</h3>
-        <pre style="white-space: pre-line; line-height: 1.6;">{{ summary }}</pre>
-    {% endif %}
+  {% if error %}
+  <p style="color: red;">{{ error }}</p>
+  {% endif %}
 </body>
 </html>
