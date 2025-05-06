@@ -4,6 +4,7 @@ FROM python:3.10-slim
 RUN apt-get update && apt-get install -y \
     tesseract-ocr \
     libglib2.0-0 libsm6 libxrender1 libxext6 poppler-utils
+    mkdir -p /app/uploads
 
 # Chỉ định thư mục làm việc
 WORKDIR /app
