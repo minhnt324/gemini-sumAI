@@ -1,9 +1,10 @@
 FROM python:3.10-slim
 
-# Cài đặt các package cần thiết
+# Cài đặt các package cần thiết và thư viện Python
 RUN apt-get update && apt-get install -y \
     tesseract-ocr \
-    libglib2.0-0 libsm6 libxrender1 libxext6 poppler-utils \
+    libglib2.0-0 libsm6 libxrender1 libxext6 poppler-utils && \
+    pip install --no-cache-dir -r requirements.txt && \
     mkdir -p /app/uploads
 
 # Chỉ định thư mục làm việc
