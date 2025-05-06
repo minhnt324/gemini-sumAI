@@ -2,9 +2,9 @@ services:
   - type: web
     name: gemini-sumAI
     env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: python app.py
-    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python app.py"
     envVars:
       - key: GEMINI_API_KEY
         sync: false
+    plan: free
