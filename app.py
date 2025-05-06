@@ -10,6 +10,15 @@ app = Flask(__name__)
 genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 model = genai.GenerativeModel("gemini-2.0-flash")
 
+# Thư mục lưu file upload
+UPLOAD_FOLDER = 'uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+ALLOWED_EXTENSIONS = {'pdf'}
+
+# Kiểm tra loại file cho phép upload
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     summary = ""
@@ -19,16 +28,21 @@ def index():
         file = request.files.get("file")
 
         try:
+            # Xử lý nếu người dùng nhập URL
             if url:
                 if url.lower().endswith(".pdf"):
                     text = extract_text_from_pdf_url(url)
                 else:
                     text = extract_text_from_web(url)
+            # Xử lý nếu người dùng upload ảnh
             elif file and file.filename:
-                image = Image.open(file.stream)
-                text = pytesseract.image_to_string(image)
+                if allowed_file(file.filename):
+                    text = extract_text_from_pdf(file)
+                else:
+                    image = Image.open(file.stream)
+                    text = pytesseract.image_to_string(image)
             else:
-                error = "❌ Vui lòng nhập URL hoặc upload ảnh."
+                error = "❌ Vui lòng nhập URL hoặc upload ảnh hoặc PDF."
                 return render_template("index.html", summary=summary, error=error)
 
             if not text.strip():
@@ -40,6 +54,18 @@ def index():
             error = f"❌ Đã xảy ra lỗi: {str(e)}"
 
     return render_template("index.html", summary=summary, error=error)
+
+# Hàm tóm tắt từ file PDF upload
+def extract_text_from_pdf(file):
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+    file.save(file_path)  # Lưu file upload vào thư mục
+
+    with fitz.open(file_path) as pdf_file:
+        text = ""
+        for page in pdf_file.pages():
+            text += page.get_text()
+    os.remove(file_path)  # Xóa file sau khi xử lý xong
+    return text
 
 def extract_text_from_web(url):
     headers = {"User-Agent": "Mozilla/5.0"}
@@ -60,4 +86,6 @@ def generate_summary(text):
     return response.text
 
 if __name__ == "__main__":
+    if not os.path.exists(UPLOAD_FOLDER):
+        os.makedirs(UPLOAD_FOLDER)  # Tạo thư mục upload nếu chưa tồn tại
     app.run(host="0.0.0.0", port=10000)
