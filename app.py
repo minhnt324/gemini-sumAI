@@ -15,7 +15,6 @@ UPLOAD_FOLDER = 'uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 ALLOWED_EXTENSIONS = {'pdf'}
 
-# Kiểm tra loại file cho phép upload
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
@@ -28,19 +27,19 @@ def index():
         file = request.files.get("file")
 
         try:
-            # Xử lý nếu người dùng nhập URL
             if url:
                 if url.lower().endswith(".pdf"):
                     text = extract_text_from_pdf_url(url)
                 else:
                     text = extract_text_from_web(url)
-            # Xử lý nếu người dùng upload ảnh
+
             elif file and file.filename:
                 if allowed_file(file.filename):
                     text = extract_text_from_pdf(file)
                 else:
                     image = Image.open(file.stream)
                     text = pytesseract.image_to_string(image)
+
             else:
                 error = "❌ Vui lòng nhập URL hoặc upload ảnh hoặc PDF."
                 return render_template("index.html", summary=summary, error=error)
@@ -55,16 +54,28 @@ def index():
 
     return render_template("index.html", summary=summary, error=error)
 
-# Hàm tóm tắt từ file PDF upload
+# ✅ Hàm tự động xử lý PDF là text hay ảnh (scan)
 def extract_text_from_pdf(file):
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-    file.save(file_path)  # Lưu file upload vào thư mục
+    file.save(file_path)
 
-    with fitz.open(file_path) as pdf_file:
-        text = ""
-        for page in pdf_file.pages():
-            text += page.get_text()
-    os.remove(file_path)  # Xóa file sau khi xử lý xong
+    with fitz.open(file_path) as doc:
+        first_page_text = doc[0].get_text().strip()
+
+        # Nếu có text trên trang đầu → xử lý toàn bộ như PDF text
+        if len(first_page_text) > 20:
+            text = "\n".join([page.get_text() for page in doc])
+        else:
+            # Nếu không → là PDF ảnh → OCR từng trang
+            text = ""
+            for page in doc:
+                pix = page.get_pixmap(dpi=200)
+                img_bytes = pix.tobytes("png")
+                image = Image.open(io.BytesIO(img_bytes))
+                page_text = pytesseract.image_to_string(image)
+                text += page_text + "\n"
+
+    os.remove(file_path)
     return text
 
 def extract_text_from_web(url):
@@ -87,5 +98,5 @@ def generate_summary(text):
 
 if __name__ == "__main__":
     if not os.path.exists(UPLOAD_FOLDER):
-        os.makedirs(UPLOAD_FOLDER)  # Tạo thư mục upload nếu chưa tồn tại
+        os.makedirs(UPLOAD_FOLDER)
     app.run(host="0.0.0.0", port=10000)
