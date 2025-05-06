@@ -5,3 +5,5 @@ pytesseract
 google-generativeai
 beautifulsoup4
 PyMuPDF
+pdfplumber
+Werkzeug
