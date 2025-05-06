@@ -1,50 +1,78 @@
 body {
-    font-family: Arial, sans-serif;
-    margin: 40px auto;
-    max-width: 800px;
-    line-height: 1.6;
-    color: #333;
-    background-color: #f9f9f9;
-    padding: 20px;
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  max-width: 700px;
+  margin: auto;
+  background-color: #f9f9f9;
 }
 
-h2, h3 {
-    color: #222;
-    border-bottom: 2px solid #ccc;
-    padding-bottom: 5px;
+h2 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: #333;
 }
 
 form {
-    margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
-input[type="text"] {
-    padding: 8px;
-    font-size: 16px;
-    width: 80%;
-    max-width: 600px;
-    margin-right: 10px;
+input[type="text"],
+input[type="file"] {
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
 button {
-    padding: 8px 16px;
-    font-size: 16px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
+  padding: 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 button:hover {
-    background-color: #0056b3;
+  background-color: #0056b3;
+}
+
+h3 {
+  margin-top: 25px;
+  font-size: 1.2rem;
+  color: #222;
 }
 
 pre {
-    background-color: #fff;
-    padding: 20px;
-    border-left: 4px solid #007bff;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    line-height: 1.8;
-    margin-top: 10px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  background: #ffffff;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  line-height: 1.6;
+  font-size: 1rem;
+  color: #333;
+}
+
+p {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 10px;
+  }
+
+  input[type="text"], input[type="file"], button {
+    font-size: 0.95rem;
+  }
+
+  pre {
+    font-size: 0.95rem;
+  }
 }
