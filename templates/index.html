@@ -8,10 +8,15 @@
 <body>
   <h2>🔍 Tóm tắt nội dung từ URL, PDF hoặc ảnh</h2>
   <form method="POST" enctype="multipart/form-data">
+    <!-- Input cho URL -->
     <input type="text" name="url" placeholder="Dán URL bài viết hoặc file PDF" />
-    <p>📎 Hoặc upload ảnh:</p>
-    <input type="file" name="file" accept="image/*" />
+    <p>📎 Hoặc upload ảnh hoặc PDF:</p>
+    
+    <!-- Input upload file ảnh hoặc PDF -->
+    <input type="file" name="file" accept="image/*,application/pdf" />
     <br><br>
+    
+    <!-- Submit button -->
     <button type="submit">Tóm tắt</button>
   </form>
 
