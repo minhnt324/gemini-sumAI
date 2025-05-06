@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>gemini-sumAI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <h2>Nhập URL bài viết hoặc file PDF</h2>
+    <form method="POST">
+        <input type="text" name="url" placeholder="Dán URL vào đây" style="width: 400px;" required>
+        <button type="submit">Tóm tắt</button>
+    </form>
+
+    {% if error %}
+        <p style="color: red;">❌ {{ error }}</p>
+    {% endif %}
+
+    {% if summary %}
+        <h3>Kết quả tóm tắt:</h3>
+        <pre style="white-space: pre-line; line-height: 1.6;">{{ summary }}</pre>
+    {% endif %}
+</body>
+</html>
