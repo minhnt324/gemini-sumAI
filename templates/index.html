@@ -2,86 +2,31 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>gemini-sumAI</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      max-width: 700px;
-      margin: auto;
-      background-color: #f9f9f9;
-    }
-
-    h2 {
-      font-size: 1.5rem;
-      margin-bottom: 15px;
-    }
-
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    input[type="text"],
-    input[type="file"] {
-      padding: 10px;
-      font-size: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-
-    button {
-      padding: 12px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      font-size: 1rem;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    pre {
-      white-space: pre-wrap;
-      background: #fff;
-      padding: 15px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-    }
-
-    @media (max-width: 480px) {
-      body {
-        padding: 10px;
-      }
-
-      input[type="text"], input[type="file"], button {
-        font-size: 0.95rem;
-      }
-    }
-  </style>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
   <h2>🔍 Tóm tắt nội dung từ URL, PDF hoặc ảnh</h2>
   <form method="POST" enctype="multipart/form-data">
     <input type="text" name="url" placeholder="Dán URL bài viết hoặc file PDF" />
-    <label>📎 Hoặc upload ảnh hoặc file PDF:</label>
-    <input type="file" name="file" accept=".pdf,image/*" />
+    <p>📎 Hoặc upload ảnh hoặc PDF:</p>
+    <input type="file" name="file" accept="image/*,application/pdf" />
     <button type="submit">Tóm tắt</button>
   </form>
 
   {% if summary %}
     <h3>📄 Kết quả tóm tắt:</h3>
-    <pre>{{ summary }}</pre>
+    <div id="rendered-markdown"></div>
+    <script>
+      document.getElementById("rendered-markdown").innerHTML =
+        marked.parse(`{{ summary | safe }}`);
+    </script>
   {% endif %}
 
   {% if error %}
-    <p style="color: red;">{{ error }}</p>
+    <p class="error">{{ error }}</p>
   {% endif %}
 </body>
 </html>
