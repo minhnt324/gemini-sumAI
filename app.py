@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, render_template
 import requests, fitz, io
 from PIL import Image
