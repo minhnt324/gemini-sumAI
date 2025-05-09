@@ -6,13 +6,34 @@
   <title>gemini-sumAI</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    .hidden { display: none; }
+    .option-block { margin: 12px 0; }
+  </style>
 </head>
 <body>
-  <h2>🔍 Tóm tắt nội dung từ URL, PDF hoặc ảnh</h2>
+  <h2>🔍 Tóm tắt nội dung từ URL, PDF, ảnh hoặc đoạn văn bản</h2>
+
   <form method="POST" enctype="multipart/form-data">
-    <input type="text" name="url" placeholder="Dán URL bài viết hoặc file PDF" />
-    <p>📎 Hoặc upload ảnh hoặc PDF:</p>
-    <input type="file" name="file" accept="image/*,application/pdf" />
+    <div class="option-block">
+      <label><input type="radio" name="input_type" value="url" checked onchange="updateInput()"> Dán URL</label>
+      <label><input type="radio" name="input_type" value="file" onchange="updateInput()"> Tải file (PDF/Ảnh)</label>
+      <label><input type="radio" name="input_type" value="text" onchange="updateInput()"> Nhập đoạn văn bản</label>
+    </div>
+
+    <div id="url-input">
+      <input type="text" name="url" placeholder="Dán URL bài viết hoặc file PDF" />
+    </div>
+
+    <div id="file-input" class="hidden">
+      <p>📎 Upload ảnh hoặc PDF:</p>
+      <input type="file" name="file" accept="image/*,application/pdf" />
+    </div>
+
+    <div id="text-input" class="hidden">
+      <textarea name="raw_text" placeholder="Nhập đoạn văn cần tóm tắt..." rows="8" style="width: 100%;"></textarea>
+    </div>
+
     <button type="submit">Tóm tắt</button>
   </form>
 
@@ -28,5 +49,15 @@
   {% if error %}
     <p class="error">{{ error }}</p>
   {% endif %}
+
+  <script>
+    function updateInput() {
+      const type = document.querySelector('input[name="input_type"]:checked').value;
+      document.getElementById('url-input').classList.toggle('hidden', type !== 'url');
+      document.getElementById('file-input').classList.toggle('hidden', type !== 'file');
+      document.getElementById('text-input').classList.toggle('hidden', type !== 'text');
+    }
+    window.onload = updateInput;
+  </script>
 </body>
 </html>
