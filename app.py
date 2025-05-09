@@ -22,26 +22,34 @@ def allowed_file(filename):
 def index():
     summary = ""
     error = ""
+
     if request.method == "POST":
+        input_type = request.form.get("input_type")
         url = request.form.get("url")
         file = request.files.get("file")
+        raw_text = request.form.get("raw_text")
 
         try:
-            if url:
+            text = ""
+
+            if input_type == "url" and url:
                 if url.lower().endswith(".pdf"):
                     text = extract_text_from_pdf_url(url)
                 else:
                     text = extract_text_from_web(url)
 
-            elif file and file.filename:
+            elif input_type == "file" and file and file.filename:
                 if allowed_file(file.filename):
                     text = extract_text_from_pdf(file)
                 else:
                     image = Image.open(file.stream)
                     text = pytesseract.image_to_string(image)
 
+            elif input_type == "text" and raw_text:
+                text = raw_text
+
             else:
-                error = "❌ Vui lòng nhập URL hoặc upload ảnh hoặc PDF."
+                error = "❌ Vui lòng nhập đúng loại dữ liệu tương ứng."
                 return render_template("index.html", summary=summary, error=error)
 
             if not text.strip():
@@ -49,6 +57,7 @@ def index():
                 return render_template("index.html", summary=summary, error=error)
 
             summary = generate_summary(text)
+
         except Exception as e:
             error = f"❌ Đã xảy ra lỗi: {str(e)}"
 
