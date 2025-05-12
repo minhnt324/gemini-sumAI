@@ -5,15 +5,15 @@ from PIL import Image
 import pytesseract
 import google.generativeai as genai
 from bs4 import BeautifulSoup
+from docx import Document  # ✅ xử lý file Word
 
 app = Flask(__name__)
 genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 model = genai.GenerativeModel("gemini-2.0-flash")
 
-# Thư mục lưu file upload
 UPLOAD_FOLDER = 'uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-ALLOWED_EXTENSIONS = {'pdf'}
+ALLOWED_EXTENSIONS = {'pdf', 'docx'}  # ✅ cho phép file Word
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -39,8 +39,12 @@ def index():
                     text = extract_text_from_web(url)
 
             elif input_type == "file" and file and file.filename:
-                if allowed_file(file.filename):
+                ext = file.filename.rsplit(".", 1)[1].lower()
+
+                if ext == "pdf":
                     text = extract_text_from_pdf(file)
+                elif ext == "docx":
+                    text = extract_text_from_docx(file)
                 else:
                     image = Image.open(file.stream)
                     text = pytesseract.image_to_string(image)
@@ -63,7 +67,14 @@ def index():
 
     return render_template("index.html", summary=summary, error=error)
 
-# ✅ Hàm tự động xử lý PDF là text hay ảnh (scan)
+def extract_text_from_docx(file):
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+    file.save(file_path)
+    doc = Document(file_path)
+    text = "\n".join([para.text for para in doc.paragraphs])
+    os.remove(file_path)
+    return text
+
 def extract_text_from_pdf(file):
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
     file.save(file_path)
@@ -71,11 +82,9 @@ def extract_text_from_pdf(file):
     with fitz.open(file_path) as doc:
         first_page_text = doc[0].get_text().strip()
 
-        # Nếu có text trên trang đầu → xử lý toàn bộ như PDF text
         if len(first_page_text) > 20:
             text = "\n".join([page.get_text() for page in doc])
         else:
-            # Nếu không → là PDF ảnh → OCR từng trang
             text = ""
             for page in doc:
                 pix = page.get_pixmap(dpi=200)
