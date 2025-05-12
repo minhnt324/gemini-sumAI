@@ -17,7 +17,7 @@
   <form method="POST" enctype="multipart/form-data">
     <div class="option-block">
       <label><input type="radio" name="input_type" value="url" checked onchange="updateInput()"> Dán URL</label>
-      <label><input type="radio" name="input_type" value="file" onchange="updateInput()"> Tải file (PDF/Ảnh)</label>
+      <label><input type="radio" name="input_type" value="file" onchange="updateInput()"> Tải file (PDF/Ảnh/Word)</label>
       <label><input type="radio" name="input_type" value="text" onchange="updateInput()"> Nhập đoạn văn bản</label>
     </div>
 
@@ -26,8 +26,8 @@
     </div>
 
     <div id="file-input" class="hidden">
-      <p>📎 Upload ảnh hoặc PDF:</p>
-      <input type="file" name="file" accept="image/*,application/pdf" />
+      <p>📎 Upload ảnh, PDF hoặc Word (.docx):</p>
+      <input type="file" name="file" accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
     </div>
 
     <div id="text-input" class="hidden">
